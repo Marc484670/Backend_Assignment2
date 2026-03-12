@@ -389,6 +389,24 @@ def export_grades():
     os.system(f'generate_report {course_id} --format {format_type}')
 
     return jsonify({'message': 'Export completed'})
+import subprocess
+
+# Vulnerability SonarQube: Command Injection
+@app.route('/api/ping')
+def ping_host():
+    host = request.args.get('host')
+
+    result = subprocess.check_output(f"ping -c 1 {host}", shell=True)
+
+    return jsonify({"output": result.decode()})
+
+
+# Vulnerability ZAP: Reflected XSS
+@app.route('/api/search')
+def search():
+    q = request.args.get("q")
+
+    return f"<h1>Results for {q}</h1>"
 
 
 @app.route('/api/courses/<int:course_id>/students', methods=['GET'])
@@ -570,3 +588,4 @@ if __name__ == '__main__':
             print("Sample courses created and assigned to John Smith")
 
     app.run(debug=True, host='0.0.0.0', port=4000)
+
